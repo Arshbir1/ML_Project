@@ -12,14 +12,14 @@ warnings.filterwarnings('ignore')
 try:
     train = pd.read_csv('train.csv')
     test = pd.read_csv('test.csv')
-    print("✅ Datasets loaded successfully!")
+    print("Datasets loaded successfully!")
 except FileNotFoundError as e:
-    print(f"❌ {e}")
+    print(f"{e}")
     exit()
 
 # --- ID column detection ---
 id_col = 'Id' if 'Id' in train.columns else 'id'
-print(f"✅ Using '{id_col}' as ID column")
+print(f" Using '{id_col}' as ID column")
 
 train_ids = train[id_col]
 test_ids = test[id_col]
@@ -29,7 +29,7 @@ test = test.drop(id_col, axis=1)
 # --- TARGET COLUMN ---
 target_col = 'HotelValue'
 if target_col not in train.columns:
-    raise ValueError("❌ 'HotelValue' column not found in train.csv!")
+    raise ValueError(" 'HotelValue' column not found in train.csv!")
 
 # --- FIX NEGATIVE VALUES ---
 # Any negative numeric values that don’t make sense are replaced with 0
@@ -37,14 +37,14 @@ num_cols = train.select_dtypes(include=[np.number]).columns
 for col in num_cols:
     neg_count = (train[col] < 0).sum()
     if neg_count > 0:
-        print(f"⚠️ Found {neg_count} negative values in '{col}', replacing with 0")
+        print(f" Found {neg_count} negative values in '{col}', replacing with 0")
         train[col] = np.where(train[col] < 0, 0, train[col])
 
 # --- DELIVERY / ORDER FIX ---
 # If both columns exist, fix delivery < order problem
 if 'DeliveryDay' in train.columns and 'OrderDay' in train.columns:
     invalid_rows = train[train['DeliveryDay'] < train['OrderDay']].shape[0]
-    print(f"⚠️ Found {invalid_rows} rows where DeliveryDay < OrderDay")
+    print(f" Found {invalid_rows} rows where DeliveryDay < OrderDay")
     train.loc[train['DeliveryDay'] < train['OrderDay'], ['DeliveryDay', 'OrderDay']] = np.nan
 
 # --- DROP TARGET ---
@@ -116,7 +116,7 @@ for alpha in alphas_lasso:
     if score > best_score:
         best_model, best_score, best_alpha = ('lasso', score, alpha)
 
-print(f"\n🏆 Best Model: {best_model.upper()} (α={best_alpha}) with CV R² = {best_score:.4f}")
+print(f"\n Best Model: {best_model.upper()} (α={best_alpha}) with CV R² = {best_score:.4f}")
 
 # --- FINAL MODEL TRAINING ---
 if best_model == 'ridge':
@@ -131,5 +131,6 @@ preds = np.expm1(preds_log)
 submission = pd.DataFrame({id_col: test_ids, target_col: preds})
 submission.to_csv('submission.csv', index=False)
 
-print("\n✅ 'submission.csv' created successfully!")
+print("\n 'submission.csv' created successfully!")
+
 
