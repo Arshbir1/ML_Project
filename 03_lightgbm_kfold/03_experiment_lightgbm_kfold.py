@@ -13,9 +13,9 @@ warnings.filterwarnings('ignore')
 try:
     df_train = pd.read_csv('train.csv')
     df_test = pd.read_csv('test.csv')
-    print("✅ Datasets loaded successfully.")
+    print("Datasets loaded successfully.")
 except FileNotFoundError:
-    print("❌ Error: train.csv or test.csv not found.")
+    print("Error: train.csv or test.csv not found.")
     exit()
 
 # Store Test IDs for submission
@@ -24,7 +24,7 @@ df_train = df_train.drop('Id', axis=1)
 df_test = df_test.drop('Id', axis=1)
 
 # --- PHASE 3: AGGRESSIVE PREPROCESSING FOR TREES ---
-print("🚀 Starting aggressive preprocessing tailored for LightGBM...")
+print("Starting aggressive preprocessing tailored for LightGBM...")
 
 # Remove outliers
 df_train = df_train.drop(df_train[(df_train['UsableArea'] > 4500) & (df_train['HotelValue'] < 300000)].index)
@@ -62,10 +62,10 @@ for col in all_data.select_dtypes(include='object').columns:
 X = all_data[:len(y_train)]
 X_test = all_data[len(y_train):]
 
-print("✅ Preprocessing complete.")
+print("Preprocessing complete.")
 
 # --- PHASE 4: K-FOLD TRAINING OF LIGHTGBM ---
-print("💪 Training 10 LightGBM models with cross-validation...")
+print("Training 10 LightGBM models with cross-validation...")
 
 # Define KFold cross-validation
 kf = KFold(n_splits=10, shuffle=True, random_state=42)
@@ -115,11 +115,11 @@ test_predictions /= kf.n_splits
 
 # Calculate overall Out-of-Fold RMSE (RMSLE because y_train is log-transformed)
 oof_rmse = np.sqrt(mean_squared_error(y_train, oof_predictions))
-print(f"\n✅ Overall Out-of-Fold RMSLE (estimate): {oof_rmse:.5f}")
+print(f"\nOverall Out-of-Fold RMSLE (estimate): {oof_rmse:.5f}")
 
 
 # --- PHASE 5: SUBMISSION ---
-print("🏆 Creating final submission file...")
+print("Creating final submission file...")
 
 # Reverse the log transformation
 final_predictions = np.expm1(test_predictions)
@@ -128,6 +128,6 @@ final_predictions = np.expm1(test_predictions)
 submission = pd.DataFrame({'Id': test_ids, 'HotelValue': final_predictions})
 submission.to_csv('submission_lgbm_kfold_average.csv', index=False)
 
-print("\n🚀 Submission file 'submission_lgbm_kfold_average.csv' created successfully!")
+print("\nSubmission file 'submission_lgbm_kfold_average.csv' created successfully!")
 print("This represents the LightGBM K-Fold averaging strategy.")
 print(submission.head())
