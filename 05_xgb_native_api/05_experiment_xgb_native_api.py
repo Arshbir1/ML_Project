@@ -13,7 +13,7 @@ warnings.filterwarnings('ignore')
 try:
     df_train = pd.read_csv('train.csv')
     df_test = pd.read_csv('test.csv')
-    print("✅ Training and test datasets loaded successfully.")
+    print("Training and test datasets loaded successfully.")
 except FileNotFoundError as e:
     print(f"Error: {e}. Please make sure train.csv and test.csv are in the same directory.")
     exit()
@@ -69,7 +69,7 @@ all_data = all_data.fillna(all_data.median())
 # 2.8 Separate back into Training and Test sets
 X = all_data[:len(y_train)]
 X_test = all_data[len(y_train):]
-print("✅ Preprocessing and feature engineering complete.")
+print("Preprocessing and feature engineering complete.")
 
 
 # --- PHASE 3: XGBOOST MODEL TRAINING AND TUNING ---
@@ -127,6 +127,6 @@ final_predictions = np.expm1(log_predictions)
 submission = pd.DataFrame({'Id': test_ids, 'HotelValue': final_predictions})
 submission.to_csv('submission_xgboost.csv', index=False)
 
-print("\n🚀 Submission file 'submission_xgboost.csv' created successfully!")
+print("\nSubmission file 'submission_xgboost.csv' created successfully!")
 print("This file was generated using a tuned XGBoost model.")
 print(submission.head())
