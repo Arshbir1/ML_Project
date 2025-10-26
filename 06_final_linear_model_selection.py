@@ -131,4 +131,5 @@ preds = np.expm1(preds_log)
 submission = pd.DataFrame({id_col: test_ids, target_col: preds})
 submission.to_csv('submission.csv', index=False)
 
-print("\n✅ 'submission.csv' created successfully! Upload to Kaggle.")
+print("\n✅ 'submission.csv' created successfully!")
+
