@@ -17,9 +17,9 @@ warnings.filterwarnings('ignore')
 try:
     df_train = pd.read_csv('train.csv')
     df_test = pd.read_csv('test.csv')
-    print("✅ Datasets loaded successfully.")
+    print("Datasets loaded successfully.")
 except FileNotFoundError:
-    print("❌ Error: train.csv or test.csv not found.")
+    print("Error: train.csv or test.csv not found.")
     exit()
 
 # Store Test IDs for submission
@@ -28,7 +28,7 @@ df_train = df_train.drop('Id', axis=1)
 df_test = df_test.drop('Id', axis=1)
 
 # --- PHASE 3: AGGRESSIVE PREPROCESSING ---
-print("🚀 Starting aggressive preprocessing...")
+print("Starting aggressive preprocessing...")
 
 # Remove outliers
 df_train = df_train.drop(df_train[(df_train['UsableArea'] > 4500) & (df_train['HotelValue'] < 300000)].index)
@@ -68,10 +68,10 @@ X = all_data[:len(y_train)].reset_index(drop=True)
 X_test = all_data[len(y_train):].reset_index(drop=True)
 y_train = y_train.reset_index(drop=True)
 
-print("✅ Preprocessing complete.")
+print("Preprocessing complete.")
 
 # --- PHASE 4: K-FOLD TRAINING & OOF PREDICTION ---
-print("💪 Training 10 folds for each of our 3 linear models...")
+print("Training 10 folds for each of our 3 linear models...")
 
 kf = KFold(n_splits=10, shuffle=True, random_state=42)
 
@@ -108,7 +108,7 @@ for fold, (train_index, val_index) in enumerate(kf.split(X, y_train)):
 
 
 # --- PHASE 5: FINDING OPTIMAL BLEND WEIGHTS ---
-print("🧠 Optimizing blend weights...")
+print("Optimizing blend weights...")
 
 # We stack our OOF predictions
 stacked_oof_preds = np.vstack([oof_preds_lasso, oof_preds_ridge, oof_preds_elastic]).T
@@ -126,13 +126,13 @@ bounds = [(0, 1) for _ in range(3)]
 res = minimize(get_rmse, initial_weights, method='SLSQP', bounds=bounds, constraints=constraints)
 optimal_weights = res.x
 
-print(f"✅ Optimal Weights Found:")
+print(f"Optimal Weights Found:")
 print(f"  - Lasso: {optimal_weights[0]*100:.2f}%")
 print(f"  - Ridge: {optimal_weights[1]*100:.2f}%")
 print(f"  - ElasticNet: {optimal_weights[2]*100:.2f}%")
 
 # --- PHASE 6: FINAL SUBMISSION ---
-print("🏆 Creating final submission with optimal blend...")
+print("Creating final submission with optimal blend...")
 
 # Stack the final test predictions
 stacked_test_preds = np.vstack([test_preds_lasso, test_preds_ridge, test_preds_elastic]).T
@@ -145,6 +145,6 @@ final_predictions = np.expm1(blended_log_preds)
 submission = pd.DataFrame({'Id': test_ids, 'HotelValue': final_predictions})
 submission.to_csv('submission_optimized_blend.csv', index=False)
 
-print("\n🚀 Submission file 'submission_optimized_blend.csv' created successfully!")
+print("\n Submission file 'submission_optimized_blend.csv' created successfully!")
 print("This is the final, most optimized version of the linear model strategy. Good luck.")
 print(submission.head())
