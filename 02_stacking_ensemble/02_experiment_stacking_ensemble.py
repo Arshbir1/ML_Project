@@ -231,7 +231,7 @@ final_pipeline = Pipeline([
 ])
 
 print("\nMeta-learner: Ridge(alpha=5.0)")
-print("\n⚠️  Warning: Increased complexity - monitor for overfitting")
+print("\n Warning: Increased complexity - monitor for overfitting")
 
 # ============================
 # PHASE 5: TRAINING
