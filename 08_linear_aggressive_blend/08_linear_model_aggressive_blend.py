@@ -15,9 +15,9 @@ warnings.filterwarnings('ignore')
 try:
     df_train = pd.read_csv('train.csv')
     df_test = pd.read_csv('test.csv')
-    print("✅ Datasets loaded successfully.")
+    print(" Datasets loaded successfully.")
 except FileNotFoundError:
-    print("❌ Error: train.csv or test.csv not found.")
+    print(" Error: train.csv or test.csv not found.")
     exit()
 
 # Store Test IDs for submission
@@ -26,7 +26,7 @@ df_train = df_train.drop('Id', axis=1)
 df_test = df_test.drop('Id', axis=1)
 
 # --- PHASE 3: AGGRESSIVE PREPROCESSING & FEATURE ENGINEERING ---
-print("🚀 Starting AGGRESSIVE preprocessing...")
+print(" Starting AGGRESSIVE preprocessing...")
 
 # Remove a few extreme outliers that can skew linear models
 df_train = df_train.drop(df_train[(df_train['UsableArea'] > 4500) & (df_train['HotelValue'] < 300000)].index)
@@ -90,10 +90,10 @@ all_data = pd.get_dummies(all_data, drop_first=True)
 X = all_data[:len(y_train)]
 X_test = all_data[len(y_train):]
 
-print("✅ Preprocessing complete. NO SCALING APPLIED.")
+print(" Preprocessing complete. NO SCALING APPLIED.")
 
 # --- PHASE 4: MODEL TRAINING WITH AUTOMATIC TUNING ---
-print("💪 Training and tuning the final model ensemble...")
+print(" Training and tuning the final model ensemble...")
 
 # 1. LASSO MODEL
 # Use LassoCV to automatically find the best alpha
@@ -108,7 +108,7 @@ ridge_model.fit(X, y_train)
 print(f"  - Best Ridge alpha found: {ridge_model.alpha_:.1f}")
 
 # --- PHASE 5: BLENDING AND SUBMISSION ---
-print("🏆 Blending predictions and creating submission file...")
+print(" Blending predictions and creating submission file...")
 
 # Predict using both tuned models
 lasso_log_preds = lasso_model.predict(X_test)
@@ -124,6 +124,6 @@ final_predictions = np.expm1(blended_log_preds)
 submission = pd.DataFrame({'Id': test_ids, 'HotelValue': final_predictions})
 submission.to_csv('submission_aggressive_no_scaling.csv', index=False)
 
-print("\n🚀 Submission file 'submission_aggressive_no_scaling.csv' created successfully!")
+print("\n Submission file 'submission_aggressive_no_scaling.csv' created successfully!")
 print("This is your most aggressively preprocessed attempt without scaling. Good luck.")
 print(submission.head())
