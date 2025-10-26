@@ -1,8 +1,7 @@
 import pandas as pd
 import numpy as np
 import xgboost as xgb
-import matplotlib.pyplot as plt
-import seaborn as sns
+# matplotlib and seaborn imports removed
 from sklearn.model_selection import KFold, GridSearchCV, cross_val_score
 from sklearn.preprocessing import StandardScaler
 from sklearn.linear_model import Ridge
@@ -87,7 +86,7 @@ all_data = pd.get_dummies(all_data, drop_first=True)
 # Separate back into train and test
 X = all_data[:len(df_train)]
 X_test = all_data[len(df_train):]
-feature_names = X.columns # For plot
+feature_names = X.columns # Variable is still needed for DataFrame creation, even if not plotted
 
 # Create a scaled version for the Ridge model
 scaler = StandardScaler()
@@ -163,18 +162,4 @@ submission_ensemble = pd.DataFrame({'Id': test_ids, 'HotelValue': ensemble_preds
 submission_ensemble.to_csv('submission_ensemble_v2.csv', index=False)
 print("Saved 'submission_ensemble_v2.csv' (Ensemble of Ridge and XGBoost)")
 
-
-# --- BONUS: FEATURE IMPORTANCE ANALYSIS ---
-print("\n--- Bonus: Feature Importance Analysis ---")
-feature_importances = pd.DataFrame(best_xgb_model.feature_importances_,
-                                   index = feature_names,
-                                   columns=['importance']).sort_values('importance', ascending=False)
-print(feature_importances.head(20))
-plt.figure(figsize=(10, 8))
-sns.barplot(x=feature_importances.importance.head(20), y=feature_importances.index.head(20))
-plt.title('Top 20 Feature Importances from Tuned XGBoost')
-plt.xlabel('Importance')
-plt.ylabel('Features')
-plt.tight_layout()
-plt.savefig('feature_importance_v2.png')
-print("\nFeature importance plot saved as 'feature_importance_v2.png'")
+print("\nScript finished.")
