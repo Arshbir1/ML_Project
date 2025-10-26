@@ -1,8 +1,4 @@
-"""
-TRAIN_OVER.PY - Moderate Complexity Increase from train_optimized
-Target: Capture more patterns while controlling overfitting
-Changes: +8 features, +1 base model, +100 trees, tuned lr
-"""
+
 
 import pandas as pd
 import numpy as np
@@ -327,15 +323,9 @@ try:
 
     submission.to_csv("submission.csv", index=False)
 
-    print("\n" + "="*100)
-    print("✓✓✓ SUBMISSION.CSV CREATED - TRAIN_OVER (Increased Complexity)")
-    print("="*100)
-    print(f"\nChanges from train_optimized:")
-    print(f"  + 8 new features (28 total)")
-    print(f"  + 1 additional base model (AdaBoost)")
-    print(f"  + 100 more GB trees (600 total)")
-    print(f"  - Slightly lower learning rate (0.045)")
-    print(f"\nExpected: Slightly better if patterns captured, or slight overfit")
+    
+    print("SUBMISSION.CSV")
+    
 
 except FileNotFoundError:
     print("\n⚠ test.csv not found")
@@ -344,6 +334,4 @@ except Exception as e:
     import traceback
     traceback.print_exc()
 
-print("\n" + "="*100)
-print("TRAINING COMPLETE - MODERATE COMPLEXITY INCREASE")
-print("="*100)
+
